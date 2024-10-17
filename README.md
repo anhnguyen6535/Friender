@@ -16,7 +16,7 @@
 3. Run in cmd `ionic serve --host=<IP address>`
 4. Access on your phone by navigating to `http://<IP address>:8100/`
 
-# Note: 
+#### Note: 
 - Ensure that your mobile device is connected to the same Wi-Fi network as your computer to access the app.
 - If you encounter any firewall issues, make sure to allow traffic on port 8100.
 
