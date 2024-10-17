@@ -1,0 +1,7 @@
+{
+  "name": "friender",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
