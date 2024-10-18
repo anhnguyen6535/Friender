@@ -2,6 +2,8 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
+import SwipeUpUnlock from './components/swipeUp';
+import FailUnlock from './components/unlockFail';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -39,11 +41,22 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
+        <Route exact path="/swipe-up" component={SwipeUpUnlock} />
+        <Route exact path="/home" component={Home} />
+        <Route exact path="/fail" component={FailUnlock} />
+        {/* Swipe-up refers to the unlock screen. in order to change the screen behind it
+            make sure you change the following line: history.push('/fail'); to which ever page you
+            declare here
+            
+            FailUnlock refers to the fail screen upon failing the password puzzle. You
+            can change which page it redirects to in this line: history.replace('/swipe-up');
+            to whichever page you declare here. You can also redirect to the fail unlock page
+            in your own component using history.push as opposed to a boolean!
+
+            have fun! We can regroup next week to discuss how it should look appearance wise :)
+            */}
         <Route exact path="/">
-          <Redirect to="/home" />
+          <Redirect to="/swipe-up" />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>
