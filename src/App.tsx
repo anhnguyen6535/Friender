@@ -43,7 +43,9 @@ const App: React.FC = () => (
       <IonRouterOutlet>
         <Route exact path="/home">
           {/* <Home /> */}
-          {/* <UnlockingPage /> Just adding my unlock page here for now*/}
+          <UnlockingPage /> {/*Just adding my unlock page here for now*/}
+        </Route>
+        <Route exact path="/shake">
           <Shaking />
         </Route>
         <Route exact path="/">
