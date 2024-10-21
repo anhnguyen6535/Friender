@@ -27,7 +27,7 @@ const SwipeUnlock: React.FC = () => {
         onEnd: (detail: GestureDetail) => {
           if (detail.deltaY < -500) {
             // If swiped up more than 500 pixels, navigate to home page
-            history.push('/fail'); 
+            history.push('/home'); 
           }
            // Reset the unlock progress
           setIsUnlocked(0);

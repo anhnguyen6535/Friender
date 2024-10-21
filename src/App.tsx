@@ -44,7 +44,7 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonRouterOutlet>
         <Route exact path="/swipe-up" component={SwipeUpUnlock} />
-        <Route exact path="/home" component={Home} />
+        <Route exact path="/home" component={UnlockingPage} />
         <Route exact path="/fail" component={FailUnlock} />
         {/* Swipe-up refers to the unlock screen. in order to change the screen behind it
             make sure you change the following line: history.push('/fail'); to which ever page you
