@@ -1,132 +1,51 @@
-import { FC, useEffect } from 'react';
-import { IonButton } from '@ionic/react';
+import { useEffect, useState } from 'react';
+// import './App.css';
 
-function createEvent<Type extends string, Detail>(
-  type: Type,
-  detail: Detail,
-): CustomEvent<Detail> & { type: Type } {
-  return new CustomEvent(type, { detail }) as CustomEvent<Detail> & { type: Type };
+interface Acceleration {
+  x: number;
+  y: number;
+  z: number;
 }
 
-function getMaxAcceleration(event: DeviceMotionEvent): number {
-  let max = 0;
-  if (event.acceleration) {
-    for (const key of ['x', 'y', 'z'] as const) {
-      const value = Math.abs(event.acceleration[key] ?? 0);
-      if (value > max) max = value;
-    }
-  }
-  return max;
-}
-
-export type ShakeEventData = DeviceMotionEvent;
-export type ShakeEvent = CustomEvent<ShakeEventData> & { type: 'shake' };
-export type ShakeEventListener = (event: ShakeEvent) => void;
-
-export type ShakeOptions = {
-  threshold: number; // Minimum acceleration needed to dispatch an event (m/s²)
-  timeout: number; // Duration between shake events (milliseconds)
-};
-
-export class Shake extends EventTarget {
-  #approved?: boolean;
-  #threshold: ShakeOptions['threshold'];
-  #timeout: ShakeOptions['timeout'];
-  #timeStamp: number;
-
-  constructor(options?: Partial<ShakeOptions>) {
-    super();
-    const {
-      threshold = 15,
-      timeout = 1000,
-    } = options ?? {};
-    this.#threshold = threshold;
-    this.#timeout = timeout;
-    this.#timeStamp = timeout * -1;
-  }
-
-  addEventListener(type: 'shake', listener: ShakeEventListener | null, options?: boolean | AddEventListenerOptions): void {
-    super.addEventListener(type, listener as EventListener, options);
-  }
-
-  dispatchEvent(event: ShakeEvent): boolean {
-    return super.dispatchEvent(event);
-  }
-
-  async approve(): Promise<boolean> {
-    if (typeof this.#approved === 'undefined') {
-      if (!('DeviceMotionEvent' in window)) return this.#approved = false;
-      try {
-        type PermissionRequestFn = () => Promise<PermissionState>;
-        type DME = typeof DeviceMotionEvent & { requestPermission: PermissionRequestFn };
-        if (typeof (DeviceMotionEvent as DME).requestPermission === 'function') {
-          const permissionState = await (DeviceMotionEvent as DME).requestPermission();
-          this.#approved = permissionState === 'granted';
-        } else this.#approved = true;
-      } catch {
-        this.#approved = false;
-      }
-    }
-    return this.#approved;
-  }
-
-  #handleDeviceMotion = (event: DeviceMotionEvent): void => {
-    const diff = event.timeStamp - this.#timeStamp;
-    if (diff < this.#timeout) return;
-    const accel = getMaxAcceleration(event);
-    if (accel < this.#threshold) return;
-    this.#timeStamp = event.timeStamp;
-    this.dispatchEvent(createEvent('shake', event));
-  };
-
-  async start(): Promise<boolean> {
-    const approved = await this.approve();
-    if (!approved) return false;
-    window.addEventListener('devicemotion', this.#handleDeviceMotion);
-    return true;
-  }
-
-  stop(): void {
-    window.removeEventListener('devicemotion', this.#handleDeviceMotion);
-  }
-}
-
-const Shaking: React.FC = () => {
-  const shake = new Shake({ threshold: 15, timeout: 1000 });
+function Shaking() {
+  const [acceleration, setAcceleration] = useState<Acceleration>({ x: 0, y: 0, z: 0 });
 
   useEffect(() => {
-    // Event listener for shake events
-    const shakeListener = (event: ShakeEvent) => {
-      console.log('Shake detected!', event.detail);
-    };
+    // Handle device motion
+    function handleMotion(event: DeviceMotionEvent) {
+      if (event.accelerationIncludingGravity) {
+        const { x, y, z } = event.accelerationIncludingGravity;
+        
+        setAcceleration({
+          x: x ? parseFloat(x.toFixed(2)) : 0, // Use 0 if x is null
+          y: y ? parseFloat(y.toFixed(2)) : 0, // Use 0 if y is null
+          z: z ? parseFloat(z.toFixed(2)) : 0, // Use 0 if z is null
+        });
 
-    shake.addEventListener('shake', shakeListener);
+        // Log the acceleration data
+        console.log(`X: ${x} m/s²`);
+        console.log(`Y: ${y} m/s²`);
+        console.log(`Z: ${z} m/s²`);
+      }
+    }
 
+    // Add event listener for devicemotion
+    window.addEventListener('devicemotion', handleMotion);
+
+    // Cleanup event listener on component unmount
     return () => {
-      shake.removeEventListener('shake', shakeListener);
-      shake.stop(); // Clean up on unmount
+      window.removeEventListener('devicemotion', handleMotion);
     };
   }, []);
 
-  const handleStart = async () => {
-    const approved = await shake.start();
-    if (!approved) {
-      console.error('Shake permission denied');
-    } else {
-      console.log('Shake detection started');
-    }
-    // console.log("click");
-    
-  };
-
   return (
     <div>
-      <h1>Shake Detector</h1>
-      {/* <button onClick={handleStart}>Start Listening for Shakes</button> */}
-      <IonButton onClick={handleStart}>Click</IonButton>
-      <p>Shake your phone to see the results in the console.</p>
+      <h1>Device Motion Data</h1>
+      <p>X-axis acceleration: {acceleration.x} m/s²</p>
+      <p>Y-axis acceleration: {acceleration.y} m/s²</p>
+      <p>Z-axis acceleration: {acceleration.z} m/s²</p>
     </div>
   );
-};
+}
 
 export default Shaking;
