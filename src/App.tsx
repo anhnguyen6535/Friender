@@ -4,6 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import SwipeUpUnlock from './components/swipeUp';
 import FailUnlock from './components/unlockFail';
+import UnlockingPage from './pages/UnlockingPage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,6 +35,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './App.css';
+import Shaking from './pages/Shaking';
 
 setupIonicReact();
 
@@ -42,7 +44,7 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonRouterOutlet>
         <Route exact path="/swipe-up" component={SwipeUpUnlock} />
-        <Route exact path="/home" component={Home} />
+        <Route exact path="/home" component={UnlockingPage} />
         <Route exact path="/fail" component={FailUnlock} />
         {/* Swipe-up refers to the unlock screen. in order to change the screen behind it
             make sure you change the following line: history.push('/fail'); to which ever page you
@@ -55,6 +57,7 @@ const App: React.FC = () => (
 
             have fun! We can regroup next week to discuss how it should look appearance wise :)
             */}
+        <Route exact path="/shake" component={Shaking} />
         <Route exact path="/">
           <Redirect to="/swipe-up" />
         </Route>

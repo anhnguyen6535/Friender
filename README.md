@@ -1,9 +1,11 @@
 ### Requirements
-1. Install nvm (Node Version Manager) for [Windows](https://github.com/coreybutler/nvm-windows) or [Linux/MacOS](https://github.com/nvm-sh/nvm)
-2. Install Node.JS using NVM (`nvm install latest`)
-3. Install Ionic CLI globally (`npm install -g @ionic/cli`)
-4. Clone the repo (`git clone <repo-url>`)
-5. Install project dependencies `npm install`
+1. [Optional] To avoid issue with nvm, remove installed Node first: [guide](https://www.geeksforgeeks.org/how-to-completely-remove-node-js-from-windows/)
+2. Install nvm (Node Version Manager) for [Windows](https://github.com/coreybutler/nvm-windows) or [Linux/MacOS](https://github.com/nvm-sh/nvm)
+3. Install Node.JS using NVM (`nvm install 20.18.0`)
+4. `nvm use 20.18.0`
+4. Install Ionic CLI globally (`npm install -g @ionic/cli`)
+5. Clone the repo (`git clone <repo-url>`)
+6. Install project dependencies `npm install`
 
 
 ### Run on Desktop only
