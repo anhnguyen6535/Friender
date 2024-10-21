@@ -33,6 +33,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './App.css';
+import Shaking from './pages/Shaking';
 
 setupIonicReact();
 
@@ -42,7 +43,8 @@ const App: React.FC = () => (
       <IonRouterOutlet>
         <Route exact path="/home">
           {/* <Home /> */}
-          <UnlockingPage /> {/* Just adding my unlock page here for now*/}
+          {/* <UnlockingPage /> Just adding my unlock page here for now*/}
+          <Shaking />
         </Route>
         <Route exact path="/">
           <Redirect to="/home" />
