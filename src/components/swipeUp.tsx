@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { IonContent, IonPage, createGesture, GestureDetail } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import opening from './opening.jpg';
 
 // createGesture: Ionic utility for creating custom gestures
 // GestureDetail: TypeScript type definition for gesture details
@@ -42,21 +43,33 @@ const SwipeUnlock: React.FC = () => {
   }, []);
 
   return (
-    <IonContent className="ion-padding" ref={contentRef} 
+    <IonContent className="tester" ref={contentRef} 
     > {/* Assigning the ref here 
        ref={contentRef} attaches our ref to this element
       */}
-      <div style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: '30px',
-        opacity: 1 - isUnlocked, // Fade out as user swipes up
-      }}>
-        <div>Swipe To Unlock</div>
-        <div style={{ fontSize: '50px', marginTop: '20px', color: 'pink'}}>↑</div>
+      <div 
+        style={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: '20px',
+          background: `url(${opening})`, // Replace with your actual image URL
+          backgroundSize:'cover',
+          backgroundPosition: 'center', // Center the image
+          backgroundRepeat: 'no-repeat',
+          width: '100vw', // Full viewport width
+          top: 0,
+          left: 0,
+          objectFit: 'cover'
+        }}
+      >
+        <div style={{
+          opacity: 1 - isUnlocked // Fade out as user swipes up
+        }}>
+          <div>Swipe Up To Unlock</div>
+        </div>
       </div>
     </IonContent>
   );
