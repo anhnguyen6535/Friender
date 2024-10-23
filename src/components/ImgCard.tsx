@@ -26,7 +26,7 @@ const ImgCard = forwardRef<HTMLIonCardElement, ImgCardProps>(({
     },
     topPosOffset = '5%',
     zIndex,
-    topCard = true
+    topCard = false
 }, ref) => {
     return (
         <IonCard
