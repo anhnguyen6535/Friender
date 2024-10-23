@@ -61,7 +61,7 @@ const App: React.FC = () => (
             */}
         <Route exact path="/shake" component={Shaking} />
         <Route exact path="/">
-          <Redirect to="/swipe-up" />
+          <Redirect to="/shake" />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>
