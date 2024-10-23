@@ -27,33 +27,112 @@
 // ];
 const Images=[
 	{
-		name: "Frog",
+		name: "Erza Scarlet",
+		age: "19",
+		occupation: "S class mage @ Fairy Tale",
+		bio: "[test]",
+		image: './anime/erza2.png'
+	},
+	{
+		name: "Fern",
+		age: "9",
+		occupation: "First class mage",
+		bio: "[test]",
+		image: './anime/fern2.png'
+	},
+	{
+		name: "Frieren",
+		age: "1000+",
+		occupation: "Mage",
+		bio: "Mimic slayer",
+		image: './anime/frieren.png'
+	},
+	{
+		name: "Gajeel Redfox",
+		age: "18",
+		occupation: "S class mage @ Fairy Tale",
+		bio: "Iron dragon slayer",
+		image: './anime/gajeel.png'
+	},
+	{
+		name: "Natsu Dragneel",
+		age: "18",
+		occupation: "Mage @ Fairy Tale",
+		bio: "",
+		image: './anime/natsu.jpg'
+	},
+	// {
+	// 	name: "Gray Fullbuster",
+	// 	age: "18",
+	// 	occupation: "Mage @ Fairy Tale",
+	// 	bio: "Ice Maker",
+	// 	image: './anime/gray.jpg'
+	// },
+	{
+		name: "Himmel",
+		age: "26",
+		occupation: "Hero",
+		bio: "The Hero",
+		image: './anime/himmel.jpeg'
+	},
+	{
+		name: "Hinata Shōyō",
 		age: "16",
-		occupation: "Student @Tokyo Jujutsu High",
+		occupation: "Middle Blocker of the MSBY Black Jackals",
 		bio: "[test]",
-		image: './frog.jpg'
+		image: './anime/hinata.jpg'
 	},
 	{
-		name: "Lizard",
-		age: "16",
-		occupation: "Student @Tokyo Jujutsu High",
-		bio: "[test]",
-		image: 'lizard.jpg'
-	},
-	{
-		name: "Sea",
+		name: "Jiraiya",
 		age: "29",
-		occupation: "Instructor @Tokyo Jujutsu High",
+		occupation: "Sanin @ Leaf Village",
 		bio: "[test]",
-		image: 'sea.jpg'
+		image: './anime/jiraiya.png'
 	},
 	{
-		name: "Woman",
-		age: "29",
-		occupation: "Instructor @Tokyo Jujutsu High",
+		name: "Shigeo Kageyama",
+		age: "14",
+		occupation: "Third-year student at Salt Middle School",
 		bio: "[test]",
-		image: 'woman.jpg'
-	}
+		image: './anime/mob.jpg'
+	},
+	{
+		name: "Naruto Uzumaki",
+		age: "12",
+		occupation: "Genin ninja @ Leaf Village",
+		bio: "[test]",
+		image: './anime/naruto2.jpg'
+	},
 ];
+// const Images=[
+// 	{
+// 		name: "Frog",
+// 		age: "16",
+// 		occupation: "Student @Tokyo Jujutsu High",
+// 		bio: "[test]",
+// 		image: './frog.jpg'
+// 	},
+// 	{
+// 		name: "Lizard",
+// 		age: "16",
+// 		occupation: "Student @Tokyo Jujutsu High",
+// 		bio: "[test]",
+// 		image: 'lizard.jpg'
+// 	},
+// 	{
+// 		name: "Sea",
+// 		age: "29",
+// 		occupation: "Instructor @Tokyo Jujutsu High",
+// 		bio: "[test]",
+// 		image: 'sea.jpg'
+// 	},
+// 	{
+// 		name: "Woman",
+// 		age: "29",
+// 		occupation: "Instructor @Tokyo Jujutsu High",
+// 		bio: "[test]",
+// 		image: 'woman.jpg'
+// 	}
+// ];
 
 export default Images;
