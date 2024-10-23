@@ -103,6 +103,20 @@ const Images=[
 		bio: "[test]",
 		image: './anime/naruto2.jpg'
 	},
+	{
+		name: "Gojo Satoru",
+		age: "16",
+		occupation: "Student @ Tokyo Jujutsu High",
+		bio: "[test]",
+		image: './anime/gojo1.jpg'
+	},
+	{
+		name: "Gojo Satoru",
+		age: "29",
+		occupation: "Instructor @ Tokyo Jujutsu High",
+		bio: "[test]",
+		image: './anime/gojo2.jpg'
+	}
 ];
 // const Images=[
 // 	{
