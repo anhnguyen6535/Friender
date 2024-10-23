@@ -30,4 +30,3 @@
 4. `ionic cap add ios`
 5. `ionic cap add android`
 6. `ionic cap sync`
-7. `ionic serve --host=<IP address>`
