@@ -6,6 +6,7 @@ import './UnlockingPage.css';
 import ImgCard from '../components/ImgCard';
 
 interface Image {
+	id: number;
 	name: string;
 	age: string;
 	occupation: string;
