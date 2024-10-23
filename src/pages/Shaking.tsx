@@ -1,4 +1,6 @@
+import { IonButton } from '@ionic/react';
 import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 
 interface Acceleration {
   x: number;
@@ -11,6 +13,7 @@ function Shaking() {
   const [shakeRight, setShakeRight] = useState<number>(0);
   const [shakeLeft, setShakeLeft] = useState<number>(0);
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
+  const history = useHistory();
 
   const SHAKE_THRESHOLD = 5; // sensor sensitivity
   const DEBOUNCE_TIME = 300; // Time in ms to debounce shakes
@@ -67,6 +70,7 @@ function Shaking() {
         .then((response: string) => {
           if (response === 'granted') {
             setPermissionGranted(true);
+            history.push('/swipe-up')
           } else {
             alert('Permission for motion data was denied.');
           }
@@ -77,14 +81,19 @@ function Shaking() {
     } else {
       // Non-iOS devices or older Safari versions
       setPermissionGranted(true);
+      history.push('/swipe-up')
     }
   };
 
   return (
     <div>
-      <h1>Device Motion Data</h1>
+      <h1>Motion Permission</h1>
       {!permissionGranted && (
-        <button onClick={requestMotionPermission}>Enable Motion Data</button>
+        <>
+          <p>We wont show this screen on the demo. This screen is to enable permission for sensor.</p>
+          <p>Once permission is granted, demo starts from the next page (swipe-up)!!</p>
+          <IonButton onClick={requestMotionPermission}>Enable Motion Data</IonButton>
+        </>
       )}
       {permissionGranted && (
         <div>
