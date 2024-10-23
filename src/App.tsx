@@ -36,6 +36,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './App.css';
 import Shaking from './pages/Shaking';
+import UnlockingPageClone from './pages/UnlockingPageClone';
 
 setupIonicReact();
 
@@ -45,6 +46,7 @@ const App: React.FC = () => (
       <IonRouterOutlet>
         <Route exact path="/swipe-up" component={SwipeUpUnlock} />
         <Route exact path="/home" component={UnlockingPage} />
+        <Route exact path="/unlock" component={UnlockingPageClone} />
         <Route exact path="/fail" component={FailUnlock} />
         {/* Swipe-up refers to the unlock screen. in order to change the screen behind it
             make sure you change the following line: history.push('/fail'); to which ever page you
