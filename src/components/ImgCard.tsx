@@ -10,13 +10,10 @@ interface ImgDTO {
 }
 
 interface ImgCardProps {
-    imgData?: ImgDTO;  // Use ImgDTO for profile data
+    imgData?: ImgDTO; 
     topPosOffset?: string;
-    topCard?: boolean;
     zIndex: number;
-    isSwiping?: boolean;
-    isTransitioning?: boolean;
-    swipeDirection?: string
+    topCard?: boolean;
 }
 
 const ImgCard = forwardRef<HTMLIonCardElement, ImgCardProps>(({
@@ -28,36 +25,21 @@ const ImgCard = forwardRef<HTMLIonCardElement, ImgCardProps>(({
         image: ""
     },
     topPosOffset = '5%',
-    topCard = true,
     zIndex,
-    isSwiping = false, 
-    isTransitioning = false, 
-    swipeDirection = 'right',
+    topCard = true
 }, ref) => {
     return (
         <IonCard
             ref={ref}
             color="dark"
-            className={`${isSwiping ? (swipeDirection === 'right' ? 'swipe-out-right' : 'swipe-out-left') : ''}`}
+            className={topCard ? 'topCard' : 'underCard'}
             style={{ position: 'absolute', top: topPosOffset, left: '5%', zIndex }}
         >
-            {topCard ? (
-                <>
-                    <IonImg className="friend-image" src={imgData.image} />
-                    <IonCardHeader>
-                        <IonCardSubtitle>{imgData.occupation}</IonCardSubtitle>
-                        <IonCardTitle>{imgData.name}, {imgData.age}</IonCardTitle>
-                    </IonCardHeader>
-                </>
-            ) : (
-                <>
-                    <IonImg className="friend-image"/>
-                    <IonCardHeader>
-                        <IonCardSubtitle>Test</IonCardSubtitle>
-                        <IonCardTitle>Test</IonCardTitle>
-                    </IonCardHeader>
-                </>
-            )}
+            <IonImg className="friend-image" src={topCard ? imgData.image : ""} />
+            <IonCardHeader>
+                <IonCardSubtitle>{topCard ? imgData.occupation : "Test"}</IonCardSubtitle>
+                <IonCardTitle>{topCard ? `${imgData.name}, ${imgData.age}` : "Test"}</IonCardTitle>
+            </IonCardHeader>
         </IonCard>
     );
 });
