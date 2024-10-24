@@ -87,7 +87,7 @@ const UnlockingPage: React.FC = () => {
 
 		// Loop through all cards and reset their positions by playing a new animation.
 		for(let i = imgArr.length - 1; i >= 0; i--) {
-			setReshuffleProgress(prev => prev + 1);
+			// setReshuffleProgress(prev => prev + 1);
 			const randomX = Math.floor(Math.random() * 100);
 			if(cardRefs.current[i]) {
 
@@ -103,7 +103,7 @@ const UnlockingPage: React.FC = () => {
 				cardRefs.current[i]!.style.zIndex
 
 				await cardSlide.play().then(() => {
-					setReshuffleProgress(prev => prev - 1);
+					// setReshuffleProgress(prev => prev - 1);
 				});
 			}
 		}
@@ -192,7 +192,8 @@ const UnlockingPage: React.FC = () => {
 			const currentTime = Date.now();
 	
 			// Check for right or left shake based on x-axis acceleration
-			if (reshuffleProgress <= 0 && x && currentTime - lastShakeTime > DEBOUNCE_TIME) { // Makes sure it only shakes once reshuffle animations are complete
+			// if (reshuffleProgress <= 0 && x && currentTime - lastShakeTime > DEBOUNCE_TIME) { // Makes sure it only shakes once reshuffle animations are complete
+			if (x && currentTime - lastShakeTime > DEBOUNCE_TIME) { // Makes sure it only shakes once reshuffle animations are complete
 				if (x > SHAKE_THRESHOLD) {
 					swipeCard(1)
 					setShakeRight(prev => prev + 1);
