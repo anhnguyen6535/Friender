@@ -1,6 +1,6 @@
 
 ion-content {
-	--background: #fff url("../assets/backgroundWallpaper.jpg") no-repeat center/100%;
+	--background: #fff url("../assets/backgroundWallpaper.jpg") no-repeat center/100% 100%;
 }
 
 ion-card {
@@ -10,6 +10,11 @@ ion-card {
 	margin-right:auto;
 
 	--background: white;
+}
+
+.scroll-content {
+	margin-bottom: 0!important;
+	margin-top: 0!important;
 }
 
 .friend-image {
@@ -52,4 +57,14 @@ ion-card {
 
 .card {
     transition: transform 0.5s, opacity 0.5s ease-out;
+}
+
+ion-grid {
+	padding-bottom:15%;
+	position: absolute;	
+	bottom: 20%;
+}
+
+ion-checkbox {
+	--size: 1.5em;
 }

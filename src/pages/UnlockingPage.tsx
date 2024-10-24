@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { IonContent, IonPage, createAnimation, IonButton, IonItem, IonCheckbox, IonFooter, IonRow, IonGrid, IonCol } from '@ionic/react';
+import { IonContent, IonPage, createAnimation, IonButton, IonItem, IonCheckbox, IonFooter, IonRow, IonGrid, IonCol, IonHeader, IonImg } from '@ionic/react';
 import Images from "../assets/friendImages/images";
 
 import './UnlockingPage.css';
@@ -22,13 +22,15 @@ interface Acceleration {
 
 const UnlockingPage: React.FC = () => {
 
-	const unlockSequence = [10, 0, 11]; // Unlock sequence = [Naruto, Erza, Gojo(Student)]
+	const unlockSequence = [10, 0, 11, 8]; // Unlock sequence = [Naruto, Erza, Gojo(Student), Jiraiya]
 	const seeCorrectWithin = 4; // Constant variable to set AT MOST how many cards you'll see before seeing the correct card.
 
 	const [currentIndex, setCurrentIndex] = useState(0)
 	const [isAnimating, setIsAnimating] = useState(false)
 	const [successScore, setSuccessScore] = useState(0);
 	const [noCardLeft, setNoCardLeft] = useState(false)		// DEBUG PURPOSE ONLY
+	const [isUnlocked, setIsUnlocked] = useState(false);
+
 	function shuffleArray(array: Image[]) {
 		const newArray = [...array];
 		// for (let i = newArray.length - 1; i > 0; i--) {
@@ -41,6 +43,11 @@ const UnlockingPage: React.FC = () => {
 		let correctCount = 0;
 		for (let i = 0; i < newArray.length - 2; i++) {
 			let j = Math.floor((i + 1) + (Math.random() * (newArray.length - (i + 1)))); // initialize j to be random first
+
+			// While loop to avoid a correct card from appearing earlier than expected
+			while(unlockSequence.includes(newArray[j].id, correctCount + 1)) {
+				j = Math.floor((i + 1) + (Math.random() * (newArray.length - (i + 1))));
+			}
 
 			// This section adds in a guarantee chance for correct card to show up within `seeCorrectWithin` value. 
 			// Chances increase the more incorrects are selected.
@@ -66,6 +73,7 @@ const UnlockingPage: React.FC = () => {
 	const imgArr = useMemo(() => shuffleArray(Images), []);
 
 	const ionContent = useRef<HTMLIonContentElement>(null)
+	const ionFooter = useRef<HTMLIonFooterElement>(null)
 	const cardRefs = useRef<(HTMLIonCardElement | null)[]>(Array(Images.length).fill(null))
 
 	const swipeCard = (direction: number) => {
@@ -99,6 +107,30 @@ const UnlockingPage: React.FC = () => {
 		}
 	};
 
+	// Callback for setIsAnimation(false) to check if the phone needs to unlock when the animation ends.
+	function checkSuccessState() {
+		// This section makes sures it returns when sequence has been met
+		if(!isUnlocked && successScore >= unlockSequence.length && ionContent.current && ionFooter.current) {
+			console.log('Success - Route/Transition to app screen');
+			// Insert routing to unlocked page?
+			setIsUnlocked(true);
+			
+			const openHomeScreen = createAnimation()
+				.addElement(ionContent.current) 
+				.addElement(ionFooter.current) 
+				.easing('ease-out')
+				.duration(500)
+				.keyframes([
+				{ offset: 0, transform: 'translateY(0px)' }, 
+				{ offset: 1, transform: `translateY(-1600px)` } 
+				]);
+
+			// Play the animation
+			openHomeScreen.play().then(() => {
+			});
+			return;
+		}
+	}
   
 	const [shakeRight, setShakeRight] = useState<number>(0);
   	const [shakeLeft, setShakeLeft] = useState<number>(0);
@@ -107,6 +139,7 @@ const UnlockingPage: React.FC = () => {
 	let lastShakeTime = Date.now();
   
 	useEffect(() => {
+		checkSuccessState();
 		// Function to handle motion events
 		function handleMotion(event: DeviceMotionEvent) {
 			if (event.accelerationIncludingGravity) {
@@ -137,7 +170,7 @@ const UnlockingPage: React.FC = () => {
 	
 	return (
 		<IonPage>
-			<IonContent ref={ionContent} scrollY={false}>
+			<IonContent ref={ionContent} scrollY={false} fullscreen={true} >
 
 				{imgArr.slice(0, Images.length).map((imgData, index) =>(
 					<ImgCard
@@ -171,17 +204,32 @@ const UnlockingPage: React.FC = () => {
 				}
 				
 			</IonContent>
-			<IonFooter>
-				<IonGrid fixed={true}>
+			<IonFooter ref={ionFooter} hidden={true}>
+				<IonGrid slot="fixed" fixed={true}>
 					<IonRow>
 						{Array(Math.min(unlockSequence.length, shakeRight)).fill(null).map((_, index) => (
-							<IonCol>
-								<IonCheckbox style={{"opacity": 1}} labelPlacement="stacked" disabled={true} checked={true} alignment={'center'}></IonCheckbox>
+							<IonCol 
+								key={index}
+							>
+								<IonCheckbox 
+									style={{"opacity": 1}} 
+									labelPlacement="stacked" 
+									disabled={true} 
+									checked={true} 
+									alignment={'center'}
+								></IonCheckbox>
 							</IonCol>
 						))}
 						{Array(Math.max(0, unlockSequence.length - shakeRight)).fill(null).map((_, index) => (
-							<IonCol>
-								<IonCheckbox style={{"opacity": 1}} labelPlacement="stacked" disabled={true} alignment={'center'}></IonCheckbox>
+							<IonCol
+								key={index + shakeRight}
+							>
+								<IonCheckbox 
+									style={{"opacity": 1}} 
+									labelPlacement="stacked" 
+									disabled={true} 
+									alignment={'center'}
+								></IonCheckbox>
 							</IonCol>
 						))}
 					</IonRow>
