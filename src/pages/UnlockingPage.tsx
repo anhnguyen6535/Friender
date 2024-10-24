@@ -111,7 +111,6 @@ const UnlockingPage: React.FC = () => {
 		// Reset states
 		setCurrentIndex(0);
 		setSuccessScore(0);
-		setNoCardLeft(false);
 		setIsUnlocked(false);
 		setShakeLeft(0);
 		setShakeRight(0);
@@ -212,7 +211,7 @@ const UnlockingPage: React.FC = () => {
 		return () => {
 			window.removeEventListener('devicemotion', handleMotion);
 		};
-	}, [isAnimating]);
+	}, [isAnimating, shakeLeft, shakeRight,successScore]);
 	
 	return (
 		<IonPage>
@@ -238,8 +237,8 @@ const UnlockingPage: React.FC = () => {
 					/>
 				))} */}
 				
-				{/* <IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
-				<IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton> */}
+				<IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
 
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 				
