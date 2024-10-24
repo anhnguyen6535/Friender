@@ -27,6 +27,7 @@
 // ];
 const Images=[
 	{
+		id: 0,
 		name: "Erza Scarlet",
 		age: "19",
 		occupation: "S class mage @ Fairy Tale",
@@ -34,6 +35,7 @@ const Images=[
 		image: './anime/erza2.png'
 	},
 	{
+		id: 1,
 		name: "Fern",
 		age: "9",
 		occupation: "First class mage",
@@ -41,6 +43,7 @@ const Images=[
 		image: './anime/fern2.png'
 	},
 	{
+		id: 2,
 		name: "Frieren",
 		age: "1000+",
 		occupation: "Mage",
@@ -48,6 +51,7 @@ const Images=[
 		image: './anime/frieren.png'
 	},
 	{
+		id: 3,
 		name: "Gajeel Redfox",
 		age: "18",
 		occupation: "S class mage @ Fairy Tale",
@@ -55,6 +59,7 @@ const Images=[
 		image: './anime/gajeel.png'
 	},
 	{
+		id: 4,
 		name: "Natsu Dragneel",
 		age: "18",
 		occupation: "Mage @ Fairy Tale",
@@ -62,6 +67,7 @@ const Images=[
 		image: './anime/natsu.jpg'
 	},
 	// {
+	//	id: 5,
 	// 	name: "Gray Fullbuster",
 	// 	age: "18",
 	// 	occupation: "Mage @ Fairy Tale",
@@ -69,6 +75,7 @@ const Images=[
 	// 	image: './anime/gray.jpg'
 	// },
 	{
+		id: 6,
 		name: "Himmel",
 		age: "26",
 		occupation: "Hero",
@@ -76,6 +83,7 @@ const Images=[
 		image: './anime/himmel.jpeg'
 	},
 	{
+		id: 7,
 		name: "Hinata Shōyō",
 		age: "16",
 		occupation: "Middle Blocker of the MSBY Black Jackals",
@@ -83,6 +91,7 @@ const Images=[
 		image: './anime/hinata.jpg'
 	},
 	{
+		id: 8,
 		name: "Jiraiya",
 		age: "29",
 		occupation: "Sanin @ Leaf Village",
@@ -90,6 +99,7 @@ const Images=[
 		image: './anime/jiraiya.png'
 	},
 	{
+		id: 9,
 		name: "Shigeo Kageyama",
 		age: "14",
 		occupation: "Third-year student at Salt Middle School",
@@ -97,6 +107,7 @@ const Images=[
 		image: './anime/mob.jpg'
 	},
 	{
+		id: 10,
 		name: "Naruto Uzumaki",
 		age: "12",
 		occupation: "Genin ninja @ Leaf Village",
@@ -104,6 +115,7 @@ const Images=[
 		image: './anime/naruto2.jpg'
 	},
 	{
+		id: 11,
 		name: "Gojo Satoru",
 		age: "16",
 		occupation: "Student @ Tokyo Jujutsu High",
@@ -111,6 +123,7 @@ const Images=[
 		image: './anime/gojo1.jpg'
 	},
 	{
+		id: 12,
 		name: "Gojo Satoru",
 		age: "29",
 		occupation: "Instructor @ Tokyo Jujutsu High",
