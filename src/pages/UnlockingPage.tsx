@@ -123,8 +123,8 @@ const UnlockingPage: React.FC = () => {
 			reshuffle();
 		} 
 		
-		// else if (cardRefs.current[currentIndex] && !isAnimating) { // Testing to see if isAnimating is necessary. Cards feel more responsive with buttons without
-		else if (cardRefs.current[currentIndex]) {
+		else if (cardRefs.current[currentIndex] && !isAnimating) { // Testing to see if isAnimating is necessary. Cards feel more responsive with buttons without
+		// else if (cardRefs.current[currentIndex]) {
 
 			// Section to track progress and update a "Score" only on swipe rights
 			// NOTE: This code only works if cards are not re-used. If cards will be re-used after shaking left, this will need to change.
@@ -193,7 +193,7 @@ const UnlockingPage: React.FC = () => {
 	
 			// Check for right or left shake based on x-axis acceleration
 			// if (reshuffleProgress <= 0 && x && currentTime - lastShakeTime > DEBOUNCE_TIME) { // Makes sure it only shakes once reshuffle animations are complete
-			if (x && currentTime - lastShakeTime > DEBOUNCE_TIME) { // Makes sure it only shakes once reshuffle animations are complete
+			if (x && currentTime - lastShakeTime > DEBOUNCE_TIME && !isAnimating) { // Makes sure it only shakes once reshuffle animations are complete
 				if (x > SHAKE_THRESHOLD) {
 					swipeCard(1)
 					setShakeRight(prev => prev + 1);
