@@ -22,6 +22,17 @@ ion-checkbox {
 	--size: 1.5em;
 }
 
+ion-footer p {
+	font-size: 1.5em;
+	color:red;
+	font-weight:bold;
+	padding: 0;
+	margin: 0;
+}
+ion-footer {
+	text-align:center;
+}
+
 .scroll-content {
 	margin-bottom: 0!important;
 	margin-top: 0!important;

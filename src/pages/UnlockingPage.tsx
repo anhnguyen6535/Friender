@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { IonContent, IonPage, createAnimation, IonButton, IonItem, IonCheckbox, IonFooter, IonRow, IonGrid, IonCol, IonHeader, IonImg } from '@ionic/react';
+import { IonContent, IonPage, createAnimation, IonButton, IonCheckbox, IonFooter, IonRow, IonGrid, IonCol } from '@ionic/react';
 import Images from "../assets/friendImages/images";
 
 import './UnlockingPage.css';
@@ -82,12 +82,31 @@ const UnlockingPage: React.FC = () => {
 	const cardRefs = useRef<(HTMLIonCardElement | null)[]>(Array(Images.length).fill(null))
 
 	async function reshuffle() {
-		console.log('reshuffling');
+		if(reshuffleProgress > 0) return;
 		setNoCardLeft(true);
 
 		// Loop through all cards and reset their positions by playing a new animation.
+		// for(let i = imgArr.length - 1; i >= 0; i--) {
+		// 	const randomX = Math.floor(Math.random() * 100);
+		// 	if(cardRefs.current[i]) {
+
+		// 		const cardSlide = createAnimation()
+		// 		.duration(75)
+		// 		.keyframes([
+					
+		// 		{ offset: 0, transform: `translateX(0px) translateY(0px) rotate(0deg)` },
+		// 		{ offset: 1, transform: `translateX(${(randomX >= 50 ? 1 : -1)}50px) translateY(-700px) rotate(0deg)` }
+		// 		]);
+
+		// 		cardSlide.addElement(cardRefs.current[i]!)
+
+		// 		await cardSlide.play();
+		// 	}
+		// }
+
+		// Loop through all cards and reset their positions by playing a new animation.
+		setReshuffleProgress(imgArr.length);
 		for(let i = imgArr.length - 1; i >= 0; i--) {
-			// setReshuffleProgress(prev => prev + 1);
 			const randomX = Math.floor(Math.random() * 100);
 			if(cardRefs.current[i]) {
 
@@ -100,10 +119,10 @@ const UnlockingPage: React.FC = () => {
 
 				cardSlide.addElement(cardRefs.current[i]!)
 
-				cardRefs.current[i]!.style.zIndex
-
+				console.log('d');
 				await cardSlide.play().then(() => {
-					// setReshuffleProgress(prev => prev - 1);
+					console.log('ding: ' + i );
+					setReshuffleProgress(prev => prev - 1);
 				});
 			}
 		}
@@ -211,7 +230,7 @@ const UnlockingPage: React.FC = () => {
 		return () => {
 			window.removeEventListener('devicemotion', handleMotion);
 		};
-	}, [isAnimating, shakeLeft, shakeRight,successScore]);
+	}, [isAnimating, shakeLeft, shakeRight, successScore, reshuffleProgress]);
 	
 	return (
 		<IonPage>
@@ -239,8 +258,8 @@ const UnlockingPage: React.FC = () => {
 				
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 
-				{/* <IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
-				<IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton> */}
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
 				
 				{/* {noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
 					<>
@@ -251,7 +270,51 @@ const UnlockingPage: React.FC = () => {
 				} */}
 				
 			</IonContent>
-			<IonFooter ref={ionFooter} hidden={true}>
+				<IonFooter ref={ionFooter} hidden={true}>
+					{	
+					( reshuffleProgress <= 0 ? 
+						<IonGrid slot="fixed" fixed={true}>
+							<IonRow>
+							{Array(Math.min(unlockSequence.length, shakeRight)).fill(null).map((_, index) => (
+								<IonCol 
+									key={index}
+								>
+									<IonCheckbox 
+										style={{"opacity": 1}} 
+										labelPlacement="stacked" 
+										disabled={true} 
+										checked={true} 
+										alignment={'center'}
+									></IonCheckbox>
+								</IonCol>
+							))}
+
+							{Array(Math.max(0, unlockSequence.length - shakeRight)).fill(null).map((_, index) => (
+								<IonCol
+									key={index + shakeRight}
+								>
+									<IonCheckbox 
+										style={{"opacity": 1}} 
+										labelPlacement="stacked" 
+										disabled={true} 
+										alignment={'center'}
+									></IonCheckbox>
+								</IonCol>
+							))}
+						</IonRow>
+					</IonGrid> :
+					<IonGrid>
+						<IonRow>
+							<IonCol style={{'width': '100vw', 'textAlign': 'center'}}>
+								<p>Incorrect Sequence</p>
+								<p>Reshuffling...</p>
+							</IonCol>
+						</IonRow>
+					</IonGrid>
+					
+					)}
+				</IonFooter> 
+			{/* <IonFooter ref={ionFooter} hidden={true}>
 				<IonGrid slot="fixed" fixed={true}>
 					<IonRow>
 						{Array(Math.min(unlockSequence.length, shakeRight)).fill(null).map((_, index) => (
@@ -281,7 +344,7 @@ const UnlockingPage: React.FC = () => {
 						))}
 					</IonRow>
 				</IonGrid>
-			</IonFooter>
+			</IonFooter> */}
 		</IonPage>
 
 	);
