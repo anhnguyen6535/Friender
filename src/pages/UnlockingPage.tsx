@@ -27,9 +27,14 @@ const UnlockingPage: React.FC = () => {
 
 	const [currentIndex, setCurrentIndex] = useState(0)
 	const [isAnimating, setIsAnimating] = useState(false)
+	const [reshuffleProgress, setReshuffleProgress] = useState(0);
 	const [successScore, setSuccessScore] = useState(0);
 	const [noCardLeft, setNoCardLeft] = useState(false)		// DEBUG PURPOSE ONLY
 	const [isUnlocked, setIsUnlocked] = useState(false);
+  
+	// SHake states
+	const [shakeRight, setShakeRight] = useState<number>(0);
+  	const [shakeLeft, setShakeLeft] = useState<number>(0);
 
 	function shuffleArray(array: Image[]) {
 		const newArray = [...array];
@@ -70,19 +75,56 @@ const UnlockingPage: React.FC = () => {
 		return newArray;
 	}
 
-	const imgArr = useMemo(() => shuffleArray(Images), []);
+	const imgArr = useMemo(() => shuffleArray(Images), [noCardLeft]); // Updated so that if setNoCardLeft is ever used, it will reshuffle!
 
 	const ionContent = useRef<HTMLIonContentElement>(null)
 	const ionFooter = useRef<HTMLIonFooterElement>(null)
 	const cardRefs = useRef<(HTMLIonCardElement | null)[]>(Array(Images.length).fill(null))
 
+	async function reshuffle() {
+		console.log('reshuffling');
+		setNoCardLeft(true);
+
+		// Loop through all cards and reset their positions by playing a new animation.
+		for(let i = imgArr.length - 1; i >= 0; i--) {
+			setReshuffleProgress(prev => prev + 1);
+			const randomX = Math.floor(Math.random() * 100);
+			if(cardRefs.current[i]) {
+
+				const cardSlide = createAnimation()
+				.duration(75)
+				.keyframes([
+				{ offset: 0, transform: `translateX(${(randomX >= 50 ? 1 : -1)}50px) translateY(-700px) rotate(0deg)` }, 
+				{ offset: 1, transform: `translateX(0px) translateY(0px) rotate(0deg)` } 
+				]);
+
+				cardSlide.addElement(cardRefs.current[i]!)
+
+				cardRefs.current[i]!.style.zIndex
+
+				await cardSlide.play().then(() => {
+					setReshuffleProgress(prev => prev - 1);
+				});
+			}
+		}
+
+		// Reset states
+		setCurrentIndex(0);
+		setSuccessScore(0);
+		setNoCardLeft(false);
+		setIsUnlocked(false);
+		setShakeLeft(0);
+		setShakeRight(0);
+	}
+
 	const swipeCard = (direction: number) => {
-		if(currentIndex >= imgArr.length-1){
+		if(currentIndex >= imgArr.length - 1){
 			console.log('fail');
-			setNoCardLeft(true)
+			reshuffle();
 		} 
 		
-		else if (cardRefs.current[currentIndex] && !isAnimating) {
+		// else if (cardRefs.current[currentIndex] && !isAnimating) { // Testing to see if isAnimating is necessary. Cards feel more responsive with buttons without
+		else if (cardRefs.current[currentIndex]) {
 
 			// Section to track progress and update a "Score" only on swipe rights
 			// NOTE: This code only works if cards are not re-used. If cards will be re-used after shaking left, this will need to change.
@@ -91,6 +133,7 @@ const UnlockingPage: React.FC = () => {
 			}
 
 			setIsAnimating(true)
+			setCurrentIndex(currentIndex+1) // Moved here to update currentIndex without waiting for animation to end.
 			const cardSlide = createAnimation()
 				.addElement(cardRefs.current[currentIndex]) 
 				.duration(500)
@@ -101,7 +144,7 @@ const UnlockingPage: React.FC = () => {
 
 			// Play the animation
 			cardSlide.play().then(() => {
-				setCurrentIndex(currentIndex+1)
+				// setCurrentIndex(currentIndex+1) // Moved to line 95 to update without waiting for animation to end
 				setIsAnimating(false)
 			});
 		}
@@ -125,15 +168,17 @@ const UnlockingPage: React.FC = () => {
 				{ offset: 1, transform: `translateY(-1600px)` } 
 				]);
 
-			// Play the animation
+			// Play the animation of the unlock screen lifting
 			openHomeScreen.play().then(() => {
 			});
-			return;
+		} else if(shakeRight >= unlockSequence.length && successScore < unlockSequence.length){
+			console.log('fail');
+			reshuffle();
 		}
+		return;
 	}
-  
-	const [shakeRight, setShakeRight] = useState<number>(0);
-  	const [shakeLeft, setShakeLeft] = useState<number>(0);
+
+	// Moved shake states above
 	const SHAKE_THRESHOLD = 5; // sensor sensitivity
 	const DEBOUNCE_TIME = 300; // Time in ms to debounce shakes
 	let lastShakeTime = Date.now();
@@ -147,7 +192,7 @@ const UnlockingPage: React.FC = () => {
 			const currentTime = Date.now();
 	
 			// Check for right or left shake based on x-axis acceleration
-			if (x && currentTime - lastShakeTime > DEBOUNCE_TIME) {
+			if (reshuffleProgress <= 0 && x && currentTime - lastShakeTime > DEBOUNCE_TIME) { // Makes sure it only shakes once reshuffle animations are complete
 				if (x > SHAKE_THRESHOLD) {
 					swipeCard(1)
 					setShakeRight(prev => prev + 1);
@@ -176,22 +221,24 @@ const UnlockingPage: React.FC = () => {
 					<ImgCard
 						key={index}
 						imgData={imgData}
+						topPosOffset={`${13 + 1*index}%`}
 						zIndex={Images.length+6 - index}
 						ref={el => cardRefs.current[index] = el}
 						topCard={true}
+						rotateVal={`${((index % 2) ? -1 : 1) * (3 - (0.35 * (index % 4)))}deg`} // Idk I tried making it look random without using random :c (Random keeps changing every update)
 					/>
 				))}
 
-				{Array(4).fill(null).map((_, index) => (
+				{/* {Array(4).fill(null).map((_, index) => (
 					<ImgCard
 						key={index}
 						topPosOffset={`${13 - 2*index}%`}
 						zIndex={index} 
 					/>
-				))}
+				))} */}
 				
-				<IonButton onClick={() => {swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
-				<IonButton onClick={() => {swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
 
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 				

@@ -12,6 +12,16 @@ ion-card {
 	--background: white;
 }
 
+ion-grid {
+	padding-bottom:15%;
+	position: absolute;	
+	bottom: 20%;
+}
+
+ion-checkbox {
+	--size: 1.5em;
+}
+
 .scroll-content {
 	margin-bottom: 0!important;
 	margin-top: 0!important;
@@ -57,14 +67,4 @@ ion-card {
 
 .card {
     transition: transform 0.5s, opacity 0.5s ease-out;
-}
-
-ion-grid {
-	padding-bottom:15%;
-	position: absolute;	
-	bottom: 20%;
-}
-
-ion-checkbox {
-	--size: 1.5em;
 }

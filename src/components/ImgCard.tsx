@@ -7,6 +7,7 @@ interface ImgDTO {
     occupation?: string;
     bio?: string;
     image?: string;
+	rotation?: number
 }
 
 interface ImgCardProps {
@@ -14,6 +15,7 @@ interface ImgCardProps {
     topPosOffset?: string;
     zIndex: number;
     topCard?: boolean;
+	rotateVal?: string;
 }
 
 const ImgCard = forwardRef<HTMLIonCardElement, ImgCardProps>(({
@@ -26,14 +28,15 @@ const ImgCard = forwardRef<HTMLIonCardElement, ImgCardProps>(({
     },
     topPosOffset = '5%',
     zIndex,
-    topCard = false
+    topCard = false,
+	rotateVal = '0'
 }, ref) => {
     return (
         <IonCard
             ref={ref}
             color="dark"
             className={topCard ? 'topCard' : 'underCard'}
-            style={{ position: 'absolute', top: topPosOffset, left: '5%', zIndex }}
+            style={{ position: 'absolute', top: topPosOffset, left: '5%', zIndex, rotate: rotateVal}}
         >
             <IonImg className="friend-image" src={topCard ? imgData.image : ""} />
             <IonCardHeader>
