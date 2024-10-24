@@ -243,13 +243,13 @@ const UnlockingPage: React.FC = () => {
 
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 				
-				{/* {noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
+				{noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
 					<>
 						<span>Shake Right: {shakeRight} </span>
 						<span>Shake Left: {shakeLeft}</span>
 						<span>Score: {successScore}</span>
 					</>
-				} */}
+				}
 				
 			</IonContent>
 			<IonFooter ref={ionFooter} hidden={true}>
