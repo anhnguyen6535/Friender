@@ -132,12 +132,9 @@ const UnlockingPage: React.FC = () => {
 	}
 
 	const swipeCard = (direction: number) => {
-		if(currentIndex >= imgArr.length - 1){
-			console.log('fail');
-			reshuffle();
-		} 
 		
-		else if (cardRefs.current[currentIndex] && !isAnimating) { // Testing to see if isAnimating is necessary. Cards feel more responsive with buttons without
+		// Re arranged state checks so that if last card is a correct card, it should unlock
+		if (cardRefs.current[currentIndex] && !isAnimating) { // Testing to see if isAnimating is necessary. Cards feel more responsive with buttons without
 		// else if (cardRefs.current[currentIndex]) {
 
 			// Section to track progress and update a "Score" only on swipe rights
@@ -161,7 +158,13 @@ const UnlockingPage: React.FC = () => {
 				// setCurrentIndex(currentIndex+1) // Moved to line 95 to update without waiting for animation to end
 				setIsAnimating(false)
 			});
-		}
+
+			return;
+		} 
+		if(currentIndex >= imgArr.length - 1){
+			console.log('Fail: Reached end of array');
+			reshuffle();
+		} 
 	};
 
 	// Callback for setIsAnimation(false) to check if the phone needs to unlock when the animation ends.
@@ -186,7 +189,7 @@ const UnlockingPage: React.FC = () => {
 			openHomeScreen.play().then(() => {
 			});
 		} else if(shakeRight >= unlockSequence.length && successScore < unlockSequence.length){
-			console.log('fail');
+			console.log('Fail: Incorrect sequence');
 			reshuffle();
 		}
 		return;
