@@ -4,6 +4,7 @@ import Images from "../assets/friendImages/images";
 
 import './UnlockingPage.css';
 import ImgCard from '../components/ImgCard';
+import HomeScreenBackground from './background.jpg';
 
 interface Image {
 	id: number;
@@ -233,6 +234,13 @@ const UnlockingPage: React.FC = () => {
 	
 	return (
 		<IonPage>
+			<IonContent style={{
+					'position': 'absolute', 
+					'zIndex': 0,
+					'--background': `#fff url(${HomeScreenBackground}) no-repeat center/100% 100%`
+					}}>
+					
+				</IonContent>
 			<IonContent ref={ionContent} scrollY={false} fullscreen={true} >
 				{imgArr.slice(0, Images.length).map((imgData, index) =>(
 					<ImgCard
@@ -256,8 +264,8 @@ const UnlockingPage: React.FC = () => {
 				
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 
-				{/* <IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
-				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton> */}
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
 				
 				{/* {noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
 					<>
