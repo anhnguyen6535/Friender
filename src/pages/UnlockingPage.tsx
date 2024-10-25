@@ -234,12 +234,11 @@ const UnlockingPage: React.FC = () => {
 	return (
 		<IonPage>
 			<IonContent ref={ionContent} scrollY={false} fullscreen={true} >
-
 				{imgArr.slice(0, Images.length).map((imgData, index) =>(
 					<ImgCard
 						key={index}
 						imgData={imgData}
-						topPosOffset={`${13 + 1*index}%`}
+						topPosOffset={`${7 + 1*index}%`}
 						zIndex={Images.length+6 - index}
 						ref={el => cardRefs.current[index] = el}
 						topCard={true}
