@@ -23,7 +23,7 @@ interface Acceleration {
 
 const UnlockingPage: React.FC = () => {
 
-	const unlockSequence = [10, 0, 13, 11]; // Unlock sequence = [Naruto, Erza, Alan, Gojo(Student)]
+	const unlockSequence = [10, 2, 13, 11]; // Unlock sequence = [Naruto, Frieren, Alan, Gojo(Student)]
 	const seeCorrectWithin = 4; // Constant variable to set AT MOST how many cards you'll see before seeing the correct card.
 
 	const [currentIndex, setCurrentIndex] = useState(0)
