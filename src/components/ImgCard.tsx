@@ -36,7 +36,7 @@ const ImgCard = forwardRef<HTMLIonCardElement, ImgCardProps>(({
             ref={ref}
             color="dark"
             className={topCard ? 'topCard' : 'underCard'}
-            style={{ position: 'absolute', top: topPosOffset, left: '5%', zIndex, rotate: rotateVal}}
+            style={{ position: 'absolute', top: topPosOffset, left: '10%', zIndex, rotate: rotateVal}}
         >
             <IonImg className="friend-image" src={topCard ? imgData.image : ""} />
             <IonCardHeader>

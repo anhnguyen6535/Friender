@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { IonContent, IonPage, createAnimation, IonButton, IonItem, IonCheckbox, IonFooter, IonRow, IonGrid, IonCol, IonHeader, IonImg } from '@ionic/react';
+import { IonContent, IonPage, createAnimation, IonButton, IonCheckbox, IonFooter, IonRow, IonGrid, IonCol } from '@ionic/react';
 import Images from "../assets/friendImages/images";
 
 import './UnlockingPage.css';
 import ImgCard from '../components/ImgCard';
+import HomeScreenBackground from './background.jpg';
 
 interface Image {
 	id: number;
@@ -38,10 +39,6 @@ const UnlockingPage: React.FC = () => {
 
 	function shuffleArray(array: Image[]) {
 		const newArray = [...array];
-		// for (let i = newArray.length - 1; i > 0; i--) {
-		//   const j = Math.floor(Math.random() * (i + 1));
-		//   [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // Swap elements
-		// }
 		
 		// Reversing sorting direction to make it easier to setup unlock sequence.
 		let incorrectCount = 0;
@@ -78,16 +75,37 @@ const UnlockingPage: React.FC = () => {
 	const imgArr = useMemo(() => shuffleArray(Images), [noCardLeft]); // Updated so that if setNoCardLeft is ever used, it will reshuffle!
 
 	const ionContent = useRef<HTMLIonContentElement>(null)
+	const ionCheckboxRow = useRef<HTMLIonRowElement>(null)
 	const ionFooter = useRef<HTMLIonFooterElement>(null)
 	const cardRefs = useRef<(HTMLIonCardElement | null)[]>(Array(Images.length).fill(null))
 
 	async function reshuffle() {
-		console.log('reshuffling');
+		if(reshuffleProgress > 0) return;
 		setNoCardLeft(true);
 
 		// Loop through all cards and reset their positions by playing a new animation.
+		setReshuffleProgress(imgArr.length);
+
+		// Just a quick shake effect with easing for the checkboxes on incorrect sequence
+		if(ionCheckboxRow.current) {
+			const errorShakeCheckboxes = createAnimation()
+			.duration(350)
+			.easing('ease-out')
+			.addElement(ionCheckboxRow.current)
+			.keyframes([
+			{ offset: 0, transform: `translateX(15px)` },
+			{ offset: 0.2, transform: `translateX(-12.5px)` },
+			{ offset: 0.4, transform: `translateX(10px)` },
+			{ offset: 0.6, transform: `translateX(-7.5px)` },
+			{ offset: 0.8, transform: `translateX(5px)` },
+			{ offset: 1, transform: `translateX(0px)` } 
+			]);
+
+			errorShakeCheckboxes.play();
+		}
+
+		// Loop through all cards and play a reshuffle animation. ImgArray should have been reshuffled upon setNoCardLeft
 		for(let i = imgArr.length - 1; i >= 0; i--) {
-			// setReshuffleProgress(prev => prev + 1);
 			const randomX = Math.floor(Math.random() * 100);
 			if(cardRefs.current[i]) {
 
@@ -100,10 +118,8 @@ const UnlockingPage: React.FC = () => {
 
 				cardSlide.addElement(cardRefs.current[i]!)
 
-				cardRefs.current[i]!.style.zIndex
-
 				await cardSlide.play().then(() => {
-					// setReshuffleProgress(prev => prev - 1);
+					setReshuffleProgress(prev => prev - 1);
 				});
 			}
 		}
@@ -114,15 +130,14 @@ const UnlockingPage: React.FC = () => {
 		setIsUnlocked(false);
 		setShakeLeft(0);
 		setShakeRight(0);
+		setNoCardLeft(false);
 	}
 
 	const swipeCard = (direction: number) => {
-		if(currentIndex >= imgArr.length - 1){
-			console.log('fail');
-			reshuffle();
-		} 
+		if(reshuffleProgress > 0) return;
 		
-		else if (cardRefs.current[currentIndex] && !isAnimating) { // Testing to see if isAnimating is necessary. Cards feel more responsive with buttons without
+		// Re arranged state checks so that if last card is a correct card, it should unlock
+		if (cardRefs.current[currentIndex] && !isAnimating) { // Testing to see if isAnimating is necessary. Cards feel more responsive with buttons without
 		// else if (cardRefs.current[currentIndex]) {
 
 			// Section to track progress and update a "Score" only on swipe rights
@@ -146,11 +161,12 @@ const UnlockingPage: React.FC = () => {
 				// setCurrentIndex(currentIndex+1) // Moved to line 95 to update without waiting for animation to end
 				setIsAnimating(false)
 			});
-		}
+		} 
 	};
 
 	// Callback for setIsAnimation(false) to check if the phone needs to unlock when the animation ends.
 	function checkSuccessState() {
+		if(reshuffleProgress > 0) return;
 		// This section makes sures it returns when sequence has been met
 		if(!isUnlocked && successScore >= unlockSequence.length && ionContent.current && ionFooter.current) {
 			console.log('Success - Route/Transition to app screen');
@@ -171,9 +187,12 @@ const UnlockingPage: React.FC = () => {
 			openHomeScreen.play().then(() => {
 			});
 		} else if(shakeRight >= unlockSequence.length && successScore < unlockSequence.length){
-			console.log('fail');
+			console.log('Fail: Incorrect sequence');
 			reshuffle();
-		}
+		} else if(currentIndex >= imgArr.length){
+			console.log('Fail: Reached end of array');
+			reshuffle();
+		} 
 		return;
 	}
 
@@ -183,9 +202,9 @@ const UnlockingPage: React.FC = () => {
 	let lastShakeTime = Date.now();
   
 	useEffect(() => {
-		checkSuccessState();
 		// Function to handle motion events
 		function handleMotion(event: DeviceMotionEvent) {
+			checkSuccessState();
 			if (event.accelerationIncludingGravity) {
 			const { x, y, z } = event.accelerationIncludingGravity;
 			const currentTime = Date.now();
@@ -211,17 +230,23 @@ const UnlockingPage: React.FC = () => {
 		return () => {
 			window.removeEventListener('devicemotion', handleMotion);
 		};
-	}, [isAnimating, shakeLeft, shakeRight,successScore]);
+	}, [isAnimating, shakeLeft, shakeRight, successScore, reshuffleProgress]);
 	
 	return (
 		<IonPage>
+			<IonContent style={{
+					'position': 'absolute', 
+					'zIndex': 0,
+					'--background': `#fff url(${HomeScreenBackground}) no-repeat center/100% 100%`
+					}}>
+					
+				</IonContent>
 			<IonContent ref={ionContent} scrollY={false} fullscreen={true} >
-
 				{imgArr.slice(0, Images.length).map((imgData, index) =>(
 					<ImgCard
 						key={index}
 						imgData={imgData}
-						topPosOffset={`${13 + 1*index}%`}
+						topPosOffset={`${7 + 1*index}%`}
 						zIndex={Images.length+6 - index}
 						ref={el => cardRefs.current[index] = el}
 						topCard={true}
@@ -239,8 +264,8 @@ const UnlockingPage: React.FC = () => {
 				
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 
-				{/* <IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
-				<IonButton onClick={() => {if(reshuffleProgress > 0) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton> */}
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
 				
 				{/* {noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
 					<>
@@ -251,37 +276,42 @@ const UnlockingPage: React.FC = () => {
 				} */}
 				
 			</IonContent>
-			<IonFooter ref={ionFooter} hidden={true}>
-				<IonGrid slot="fixed" fixed={true}>
-					<IonRow>
-						{Array(Math.min(unlockSequence.length, shakeRight)).fill(null).map((_, index) => (
-							<IonCol 
-								key={index}
-							>
-								<IonCheckbox 
-									style={{"opacity": 1}} 
-									labelPlacement="stacked" 
-									disabled={true} 
-									checked={true} 
-									alignment={'center'}
-								></IonCheckbox>
-							</IonCol>
-						))}
-						{Array(Math.max(0, unlockSequence.length - shakeRight)).fill(null).map((_, index) => (
-							<IonCol
-								key={index + shakeRight}
-							>
-								<IonCheckbox 
-									style={{"opacity": 1}} 
-									labelPlacement="stacked" 
-									disabled={true} 
-									alignment={'center'}
-								></IonCheckbox>
-							</IonCol>
-						))}
-					</IonRow>
-				</IonGrid>
-			</IonFooter>
+				<IonFooter ref={ionFooter} hidden={true}>
+						<IonGrid slot="fixed" fixed={true}>
+							<IonRow>
+								<IonCol style={{'width': '100vw', 'textAlign': 'center'}}>
+									{(reshuffleProgress > 0 ? <p>Incorrect Sequence</p> : <> </>)}
+								</IonCol>
+							</IonRow>
+							<IonRow ref={ionCheckboxRow}>
+							{Array(Math.min(unlockSequence.length, shakeRight)).fill(null).map((_, index) => (
+								<IonCol 
+									key={index}
+								>
+									<IonCheckbox 
+										style={{"opacity": 1}} 
+										labelPlacement="stacked" 
+										disabled={true} 
+										checked={true} 
+										alignment={'center'}
+									></IonCheckbox>
+								</IonCol>
+							))}
+							{Array(Math.max(0, unlockSequence.length - shakeRight)).fill(null).map((_, index) => (
+								<IonCol
+									key={index + shakeRight}
+								>
+									<IonCheckbox 
+										style={{"opacity": 1}} 
+										labelPlacement="stacked" 
+										disabled={true} 
+										alignment={'center'}
+									></IonCheckbox>
+								</IonCol>
+							))}
+						</IonRow>
+					</IonGrid>
+				</IonFooter> 
 		</IonPage>
 
 	);
