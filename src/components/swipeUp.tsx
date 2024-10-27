@@ -56,7 +56,7 @@ const SwipeUnlock: React.FC = () => {
           fontSize: '20px',
           background: `url(${'./opening.jpg'})`, // Replace with your actual image URL
           backgroundSize:'cover',
-          backgroundPosition: 'center', // Center the image
+          backgroundPosition: 'bottom', // Center the image
           backgroundRepeat: 'no-repeat',
           width: '100vw', // Full viewport width
           top: 0,
