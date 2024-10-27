@@ -237,7 +237,7 @@ const UnlockingPage: React.FC = () => {
 			<IonContent style={{
 					'position': 'absolute', 
 					'zIndex': 0,
-					'--background': `#fff url(${HomeScreenBackground}) no-repeat center/100% 100%`
+					'--background': `url(${HomeScreenBackground}) center bottom / cover no-repeat`
 					}}>
 					
 				</IonContent>
