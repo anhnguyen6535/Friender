@@ -130,9 +130,11 @@ const UnlockingPage: React.FC = () => {
 		setIsUnlocked(false);
 		setShakeLeft(0);
 		setShakeRight(0);
+		setNoCardLeft(false);
 	}
 
 	const swipeCard = (direction: number) => {
+		if(reshuffleProgress > 0) return;
 		
 		// Re arranged state checks so that if last card is a correct card, it should unlock
 		if (cardRefs.current[currentIndex] && !isAnimating) { // Testing to see if isAnimating is necessary. Cards feel more responsive with buttons without
@@ -159,17 +161,12 @@ const UnlockingPage: React.FC = () => {
 				// setCurrentIndex(currentIndex+1) // Moved to line 95 to update without waiting for animation to end
 				setIsAnimating(false)
 			});
-
-			return;
-		} 
-		if(currentIndex >= imgArr.length - 1){
-			console.log('Fail: Reached end of array');
-			reshuffle();
 		} 
 	};
 
 	// Callback for setIsAnimation(false) to check if the phone needs to unlock when the animation ends.
 	function checkSuccessState() {
+		if(reshuffleProgress > 0) return;
 		// This section makes sures it returns when sequence has been met
 		if(!isUnlocked && successScore >= unlockSequence.length && ionContent.current && ionFooter.current) {
 			console.log('Success - Route/Transition to app screen');
@@ -192,7 +189,10 @@ const UnlockingPage: React.FC = () => {
 		} else if(shakeRight >= unlockSequence.length && successScore < unlockSequence.length){
 			console.log('Fail: Incorrect sequence');
 			reshuffle();
-		}
+		} else if(currentIndex >= imgArr.length){
+			console.log('Fail: Reached end of array');
+			reshuffle();
+		} 
 		return;
 	}
 
@@ -202,9 +202,9 @@ const UnlockingPage: React.FC = () => {
 	let lastShakeTime = Date.now();
   
 	useEffect(() => {
-		checkSuccessState();
 		// Function to handle motion events
 		function handleMotion(event: DeviceMotionEvent) {
+			checkSuccessState();
 			if (event.accelerationIncludingGravity) {
 			const { x, y, z } = event.accelerationIncludingGravity;
 			const currentTime = Date.now();
@@ -264,8 +264,8 @@ const UnlockingPage: React.FC = () => {
 				
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 
-				{/* <IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
-				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton> */}
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
 				
 				{/* {noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
 					<>
