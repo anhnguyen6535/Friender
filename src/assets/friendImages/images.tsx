@@ -129,6 +129,14 @@ const Images=[
 		occupation: "Instructor @ Tokyo Jujutsu High",
 		bio: "[test]",
 		image: './anime/gojo2.jpg'
+	},
+	{
+		id: 13,
+		name: "Alan",
+		age: "23",
+		occupation: "Student @ UofC",
+		bio: "[test]",
+		image: './anime/alan.jpg'
 	}
 ];
 // const Images=[
