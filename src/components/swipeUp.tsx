@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { IonContent, IonPage, createGesture, GestureDetail } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import opening from 'opening.jpg';
 
 // createGesture: Ionic utility for creating custom gestures
 // GestureDetail: TypeScript type definition for gesture details
