@@ -1,5 +1,5 @@
 import { IonButton } from '@ionic/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 interface Acceleration {
@@ -12,22 +12,18 @@ function Shaking() {
   const [acceleration, setAcceleration] = useState<Acceleration>({ x: 0, y: 0, z: 0 });
   const [shakeRight, setShakeRight] = useState<number>(0);
   const [shakeLeft, setShakeLeft] = useState<number>(0);
-  const [initialX, setInitialX] = useState<number | null>(null);
   const [shakeRVal, setShakeRVal] = useState<number>(0);
   const [shakeLVal, setShakeLVal] = useState<number>(0);
+  const [debounceTime, setDebounceTime] = useState<number>(200);
+  const [shakeThreshold, setShakeThreshold] = useState<number>(10.00);
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
   const history = useHistory();
 
-  const SHAKE_THRESHOLD = 9; // sensor sensitivity
-  const DEBOUNCE_TIME = 500; // Time in ms to debounce shakes
-  const STABLE_TIME = 2000;
-  const ERR_MARGIN = 5;
-  const stableTimer = useRef<NodeJS.Timeout | null>(null); // Timer to track stable x values
+  // const SHAKE_THRESHOLD = 10.00; // sensor sensitivity
+  // const DEBOUNCE_TIME = 200; // Time in ms to debounce shakes
   let lastShakeTime = Date.now();
 
   useEffect(() => {
-    const DEAD_ZONE : number = 0; // Adjust as needed for sensitivity
-    let lastDirection : "left" | "right" | null = null; 
     // Function to handle motion events
     function handleMotion(event: DeviceMotionEvent) {
       if (event.accelerationIncludingGravity) {
@@ -41,38 +37,17 @@ function Shaking() {
           z: z ? parseFloat(z.toFixed(2)) : 0,
         });
 
-        if(initialX === null && x != undefined){
-          setInitialX(x)
-        }
-
         // Check for right or left shake based on x-axis acceleration
-        if (x && currentTime - lastShakeTime > DEBOUNCE_TIME && initialX) {
-          // setShakeVal(currentTime - lastShakeTime)
-          if (x - initialX > SHAKE_THRESHOLD && Math.abs(x) > DEAD_ZONE && lastDirection !== "right") {
+        if (x && currentTime - lastShakeTime > debounceTime) {
+          if (x > shakeThreshold) {
+            setShakeRight(prev => prev + 1);
             setShakeRVal(x)
-            setShakeRight((prev) => prev + 1);
-            lastShakeTime = currentTime;
-            lastDirection = "right";
-          } else if (x - initialX < -SHAKE_THRESHOLD && Math.abs(x) > DEAD_ZONE && lastDirection !== "left") {
+            lastShakeTime = currentTime; 
+          } else if (x < -shakeThreshold) {
+            setShakeLeft(prev => prev + 1);
             setShakeLVal(x)
-            setShakeLeft((prev) => prev + 1);
-            lastShakeTime = currentTime;
-            lastDirection = "left";
+            lastShakeTime = currentTime; 
           }
-        }
-
-        // Check if x is stable within errMargin of initialX
-        if (initialX !== null && x && Math.abs(x - initialX) >= ERR_MARGIN) {
-          if (!stableTimer.current) {
-            stableTimer.current = setTimeout(() => {
-              setInitialX(x); // Update initialX after stability
-              stableTimer.current = null;
-            }, STABLE_TIME);
-          }
-        } else if (stableTimer.current) {
-          // Reset the timer if x goes out of range
-          clearTimeout(stableTimer.current);
-          stableTimer.current = null;
         }
       }
     }
@@ -116,7 +91,6 @@ function Shaking() {
     }
   };
 
-
   const requestMotionforDebug = () => {
     if (
       typeof DeviceMotionEvent !== 'undefined' &&
@@ -142,6 +116,11 @@ function Shaking() {
     }
   };
 
+  const increaseDebounce = () =>{ setDebounceTime(prev => prev + 50)}
+  const decreaseDebounce = () =>{ setDebounceTime(prev => prev - 50)}
+  const increaseShakeThreshold = () =>{ setShakeThreshold(prev => prev + 1)}
+  const decreaseShakeThreshold = () =>{ setShakeThreshold(prev => prev - 1)}
+
   return (
     <div>
       <h1>Motion Permission</h1>
@@ -156,11 +135,16 @@ function Shaking() {
       {permissionGranted && (
         <div>
           <p>X-axis acceleration: {acceleration.x} m/s²</p>
-          <p>Initial X: {initialX} m/s²</p>
           {/* <p>Y-axis acceleration: {acceleration.y} m/s²</p>
           <p>Z-axis acceleration: {acceleration.z} m/s²</p> */}
           <p>Shake Right: {shakeRight} value: {shakeRVal}</p>
           <p>Shake Left: {shakeLeft} value: {shakeLVal}</p>
+          <p>Debounce Time: {debounceTime}</p>
+          <IonButton onClick={increaseDebounce} >Increase Debounce Time</IonButton>
+          <IonButton onClick={decreaseDebounce} >Decrease Debounce Time</IonButton>
+          <p>Shake Threshold: {shakeThreshold}</p>
+          <IonButton onClick={increaseShakeThreshold} >Increase Shake Threshold</IonButton>
+          <IonButton onClick={decreaseShakeThreshold} >Decrease Shake Threshold</IonButton>
         </div>
       )}
     </div>
