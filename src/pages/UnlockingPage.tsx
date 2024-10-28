@@ -133,6 +133,7 @@ const UnlockingPage: React.FC = () => {
 		setIsUnlocked(false);
 		setShakeLeft(0);
 		setShakeRight(0);
+		setRecordedScores([]);
 		setNoCardLeft(false);
 	}
 
