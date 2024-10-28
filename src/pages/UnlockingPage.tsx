@@ -37,9 +37,6 @@ const UnlockingPage: React.FC = () => {
 	const [shakeRight, setShakeRight] = useState<number>(0);
   	const [shakeLeft, setShakeLeft] = useState<number>(0);
 
-	// States required for undo
-	const [recordedScores, setRecordedScores] = useState<number[]>([]);
-
 	function shuffleArray(array: Image[]) {
 		const newArray = [...array];
 		
@@ -133,7 +130,6 @@ const UnlockingPage: React.FC = () => {
 		setIsUnlocked(false);
 		setShakeLeft(0);
 		setShakeRight(0);
-		setRecordedScores([]);
 		setNoCardLeft(false);
 	}
 
@@ -147,18 +143,7 @@ const UnlockingPage: React.FC = () => {
 			// Section to track progress and update a "Score" only on swipe rights
 			// NOTE: This code only works if cards are not re-used. If cards will be re-used after shaking left, this will need to change.
 			if(direction == 1){
-				let score = 0;
-				imgArr[currentIndex].id == unlockSequence[Math.max(0, successScore)] ? score = 1 : score = -1; // If correct, add 1 to score, otherwise subtract 1
-				// Added score recording for undo
-				setSuccessScore(successScore + score);
-				let newRecord = [...recordedScores];
-				newRecord = newRecord.concat([score]);
-				setRecordedScores(newRecord);
-			} else {
-				// Added score recording for undo
-				let newRecord = [...recordedScores];
-				newRecord = newRecord.concat([0]);
-				setRecordedScores(newRecord);
+				imgArr[currentIndex].id == unlockSequence[Math.max(0, successScore)] ? setSuccessScore(prev => prev + 1) : setSuccessScore(prev => prev - 1); // If correct, add 1 to score, otherwise subtract 1
 			}
 
 			setIsAnimating(true)
@@ -169,43 +154,6 @@ const UnlockingPage: React.FC = () => {
 				.keyframes([
 				{ offset: 0, transform: 'translateX(0px) rotate(0deg)' }, 
 				{ offset: 1, transform: `translateX(${700*direction}px) rotate(50deg)` } 
-				]);
-
-			// Play the animation
-			cardSlide.play().then(() => {
-				// setCurrentIndex(currentIndex+1) // Moved to line 95 to update without waiting for animation to end
-				setIsAnimating(false)
-			});
-		} 
-	};
-
-	const undoCard = () => {
-		if(reshuffleProgress > 0) return;
-
-		if(currentIndex-1 < 0) return; // Check to ensure we aren't undoing past the first card
-
-		console.log(recordedScores);
-		
-		// So long as currentIndex - 1 is current and not already animating a card
-		if (cardRefs.current[currentIndex-1] && !isAnimating) { 
-
-			setIsAnimating(true)
-			setCurrentIndex(currentIndex-1) // Moved here to update currentIndex without waiting for animation to end.
-			const lastScore = recordedScores[recordedScores.length - 1];
-			let newRecord = [...recordedScores];
-
-			// This section reverses the scores recorded when undoing
-			if(lastScore != 0) setShakeRight(shakeRight - 1);
-			else setShakeLeft(shakeLeft - 1);
-			newRecord = newRecord.slice(0, recordedScores.length - 1);
-			setSuccessScore(successScore - lastScore);
-			setRecordedScores(newRecord);
-			const cardSlide = createAnimation()
-				.addElement(cardRefs.current[currentIndex-1]!) 
-				.duration(375)
-				.keyframes([
-				{ offset: 0, transform: 'translateY(-1500px)' }, 
-				{ offset: 1, transform: `translateY(0px)` } 
 				]);
 
 			// Play the animation
@@ -282,7 +230,7 @@ const UnlockingPage: React.FC = () => {
 		return () => {
 			window.removeEventListener('devicemotion', handleMotion);
 		};
-	}, [isAnimating, shakeLeft, shakeRight, successScore, reshuffleProgress, isUnlocked, recordedScores]);
+	}, [isAnimating, shakeLeft, shakeRight, successScore, reshuffleProgress, isUnlocked]);
 	
 	return (
 		<IonPage>
@@ -316,17 +264,16 @@ const UnlockingPage: React.FC = () => {
 				
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 
-				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
-				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
-				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; undoCard();}}>Undo</IonButton>
+				{/* <IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton> */}
 				
-				{noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
+				{/* {noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
 					<>
 						<span>Shake Right: {shakeRight} </span>
 						<span>Shake Left: {shakeLeft}</span>
 						<span>Score: {successScore}</span>
 					</>
-				}
+				} */}
 				
 			</IonContent>
 				<IonFooter ref={ionFooter} hidden={true}>
