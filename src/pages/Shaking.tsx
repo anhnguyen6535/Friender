@@ -129,7 +129,7 @@ function Shaking() {
           <p>We wont show this screen on the demo. This screen is to enable permission for sensor.</p>
           <p>Once permission is granted, demo starts from the next page (swipe-up)!!</p>
           <IonButton onClick={requestMotionPermission}>Enable Motion Data</IonButton>
-          <IonButton onClick={requestMotionforDebug}>Shaking debug</IonButton>
+          {/* <IonButton onClick={requestMotionforDebug}>Shaking debug</IonButton> */}
         </>
       )}
       {permissionGranted && (
