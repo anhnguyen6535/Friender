@@ -23,7 +23,7 @@ interface Acceleration {
 
 const UnlockingPage: React.FC = () => {
 
-	const unlockSequence = [10, 0, 11, 8]; // Unlock sequence = [Naruto, Erza, Gojo(Student), Jiraiya]
+	const unlockSequence = [10, 2, 13, 11]; // Unlock sequence = [Naruto, Frieren, Alan, Gojo(Student)]
 	const seeCorrectWithin = 4; // Constant variable to set AT MOST how many cards you'll see before seeing the correct card.
 
 	const [currentIndex, setCurrentIndex] = useState(0)
@@ -186,10 +186,10 @@ const UnlockingPage: React.FC = () => {
 			// Play the animation of the unlock screen lifting
 			openHomeScreen.play().then(() => {
 			});
-		} else if(shakeRight >= unlockSequence.length && successScore < unlockSequence.length){
+		} else if(shakeRight >= unlockSequence.length && successScore < unlockSequence.length && !isUnlocked){
 			console.log('Fail: Incorrect sequence');
 			reshuffle();
-		} else if(currentIndex >= imgArr.length){
+		} else if(currentIndex >= imgArr.length && !isUnlocked){
 			console.log('Fail: Reached end of array');
 			reshuffle();
 		} 
@@ -230,7 +230,7 @@ const UnlockingPage: React.FC = () => {
 		return () => {
 			window.removeEventListener('devicemotion', handleMotion);
 		};
-	}, [isAnimating, shakeLeft, shakeRight, successScore, reshuffleProgress]);
+	}, [isAnimating, shakeLeft, shakeRight, successScore, reshuffleProgress, isUnlocked]);
 	
 	return (
 		<IonPage>
@@ -264,8 +264,8 @@ const UnlockingPage: React.FC = () => {
 				
 				{/* DEBUG PURPOSE WILL DELETE WHEN SUBMIT!!!! */}
 
-				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
-				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton>
+				{/* <IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(-1); setShakeLeft(prev => prev + 1)}}>Left</IonButton>
+				<IonButton onClick={() => {if(reshuffleProgress > 0 || isAnimating) return; swipeCard(1); setShakeRight(prev => prev + 1)}}>Right</IonButton> */}
 				
 				{/* {noCardLeft ? <p style={{color: 'white'}}>No pic left</p> : 
 					<>

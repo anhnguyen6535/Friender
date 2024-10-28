@@ -1,6 +1,6 @@
 
 ion-content {
-	--background: #fff url("../assets/backgroundWallpaper.jpg") no-repeat center/100% 100%;
+	--background: #fff url("../assets/backgroundWallpaper.jpg") center bottom / cover no-repeat;
 }
 
 ion-card {
